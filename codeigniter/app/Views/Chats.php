@@ -75,18 +75,18 @@
             </div>
         </div>
     </nav>
-    <div class="h-screen flex bg-gray-100">
-        <nav class="w-80 bg-white border-r border-gray-200 flex-none">
+    <div class="h-screen flex flex-col md:flex-row bg-gray-100">
+        <nav class="w-full md:w-80 bg-white border-b md:border-r border-gray-200 flex-none md:h-screen">
             <div class="p-4 border-b border-gray-200">
                 <h1 class="text-xl font-semibold text-gray-800">Contacts</h1>
             </div>
-            <div class="overflow-y-auto h-[calc(100vh-73px)]">
+            <div class="overflow-y-auto md:h-[calc(100vh-73px)]">
                 <div
                     class="contact hover:bg-gray-50 p-4 cursor-pointer border-b border-gray-100 flex items-center space-x-4">
                     <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde" alt="Contact 1"
                         class="w-12 h-12 rounded-full object-cover">
                     <div class="flex-1">
-                        <h3 class="font-medium text-gray-800">John Smith</h3>
+                        <h3 class="font-medium text-gray-800">Farru</h3>
                         <p class="text-sm text-gray-500 truncate">Hey, how are you doing?</p>
                     </div>
                 </div>
@@ -95,7 +95,7 @@
                     <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330" alt="Contact 2"
                         class="w-12 h-12 rounded-full object-cover">
                     <div class="flex-1">
-                        <h3 class="font-medium text-gray-800">Sarah Wilson</h3>
+                        <h3 class="font-medium text-gray-800">Afreen</h3>
                         <p class="text-sm text-gray-500 truncate">Let's meet tomorrow!</p>
                     </div>
                 </div>
@@ -104,7 +104,7 @@
                     <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36" alt="Contact 3"
                         class="w-12 h-12 rounded-full object-cover">
                     <div class="flex-1">
-                        <h3 class="font-medium text-gray-800">Mike Johnson</h3>
+                        <h3 class="font-medium text-gray-800">Ibtesam</h3>
                         <p class="text-sm text-gray-500 truncate">Thanks for your help!</p>
                     </div>
                 </div>
@@ -116,7 +116,7 @@
                 <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde" alt="Current chat"
                     class="w-12 h-12 rounded-full object-cover">
                 <div class="flex-1">
-                    <h2 class="font-medium text-gray-800">John Smith</h2>
+                    <h2 class="font-medium text-gray-800">Farru</h2>
                     <div class="flex items-center space-x-2">
                         <span class="w-2 h-2 bg-green-500 rounded-full"></span>
                         <span class="text-sm text-gray-500">Online</span>
@@ -142,6 +142,7 @@
             </footer>
         </main>
     </div>
+
     <!-- --------------------------------------------script--------------------------------------------------------------------- -->
     <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"
         integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+"
