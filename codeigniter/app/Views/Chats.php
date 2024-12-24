@@ -179,10 +179,6 @@
                     messagesDiv.appendChild(messageElement);
                     messagesDiv.scrollTop = messagesDiv.scrollHeight;
                 })
-
-
-
-
                 socket.emit('join', {
                     data: "<?= session()->get('user')->email ?>, <?= session()->get('user')->name ?>",
                 });
@@ -237,8 +233,6 @@
                     name: "<?= session()->get('user')->name ?>",
                     message
                 })
-
-
             })
         }
     </script>
