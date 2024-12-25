@@ -2,9 +2,10 @@
 
 namespace App\Controllers;
 
-use App\Models\CampaignModel;
-use App\Models\ChatModel;
 use App\Models\UserModel;
+use App\Models\CampaignModel;
+use App\Models\AccessLevelModel;
+use App\Models\ChatModel;
 
 class Home extends BaseController
 {
@@ -259,5 +260,16 @@ class Home extends BaseController
         $chat_model = new ChatModel();
         $chats = $chat_model->findAll();
         return view('/chats', ['chats' => $chats]);
+    }
+
+    //---------------------------------------accesslevel-------------------------------------------------------------
+    public function accesslevel()
+    {
+        if (!$this->session->has('user')) {
+            return redirect()->to('/login');
+        }
+        $access_model = new AccessLevelModel();
+        $accesslevel = $access_model->findAll();
+        return view('/accesslevel', ['accesslevel' => $accesslevel]);
     }
 }

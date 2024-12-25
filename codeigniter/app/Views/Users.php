@@ -72,6 +72,7 @@
                 <div class="rounded-md dropdown-content">
                     <a href="/users">Users</a>
                     <a href="/campaigns">Campaigns</a>
+                    <a href="/accesslevel">Access Level</a>
                     <a href="/chats">Chat</a>
                 </div>
             </div>
