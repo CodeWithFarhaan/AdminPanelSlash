@@ -117,7 +117,7 @@
                 <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde" alt="Current chat"
                     class="w-12 h-12 rounded-full object-cover">
                 <div class="flex-1">
-                    <h2 class="font-medium text-gray-800">Farru</h2>
+                    <h2 class="font-medium text-gray-800"><?php print_r(ucfirst(session()->get('user')->name)) ?></h2>
                     <div class="flex items-center space-x-2">
                         <span class="w-2 h-2 bg-green-500 rounded-full"></span>
                         <span class="text-sm text-gray-500">Online</span>

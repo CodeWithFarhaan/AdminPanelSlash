@@ -263,13 +263,26 @@ class Home extends BaseController
     }
 
     //---------------------------------------accesslevel-------------------------------------------------------------
-    public function accesslevel()
+    public function accessLevel()
     {
-        if (!$this->session->has('user')) {
-            return redirect()->to('/login');
-        }
-        $access_model = new AccessLevelModel();
-        $accesslevel = $access_model->findAll();
-        return view('/accesslevel', ['accesslevel' => $accesslevel]);
+        $user_model = new UserModel();
+        $users = $user_model->findAll();
+        return view('accesslevel', ['users' => $users]);
     }
+
+    public function updateRole($id)
+    {
+        // Get new role from POST data
+        $newRole = $this->request->getPost('roles');
+        $user_model = new UserModel();
+        // Update the role of the user with the given ID
+        $user = $user_model->find($id);
+        if ($user) {
+            $user->userRole = $newRole;
+            $user_model->save($user);
+        }
+        // Redirect back to the access level page
+        return redirect()->to('/accesslevel');
+    }
+
 }

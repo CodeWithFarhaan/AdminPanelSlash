@@ -28,5 +28,7 @@ $routes->delete('/deleteCampaign/(:num)', 'Home::deleteCampaign/$1');
 $routes->match(['GET', 'POST'], '/chats', 'Home::chats');
 
 
-$routes->match(['GET', 'POST'], '/accesslevel', 'Home::accesslevel');
+$routes->get('/accesslevel', 'Home::accessLevel');
+$routes->post('/update-role/(:num)', 'Home::updateRole/$1');
+
 

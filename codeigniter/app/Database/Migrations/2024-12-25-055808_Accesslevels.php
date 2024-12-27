@@ -17,7 +17,7 @@ class Accesslevels extends Migration
             ],
             'roles' => [
                 'type' => 'ENUM',
-                'constraint' => ['admin','agent', 'teamLeader', 'superVisor'],
+                'constraint' => ['admin','agent', 'teamLeader', 'supervisor'],
                 'null' => false,
                 'default' => 'admin' 
             ],
