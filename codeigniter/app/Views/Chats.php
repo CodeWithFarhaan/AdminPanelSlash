@@ -87,7 +87,7 @@
                     <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde" alt="Contact 1"
                         class="w-12 h-12 rounded-full object-cover">
                     <div class="flex-1">
-                        <h3 class="font-medium text-gray-800">Farru</h3>
+                        <h3 class="font-medium text-gray-800"><?php print_r(ucfirst(session()->get('user')->name)) ?></h3>
                         <p class="text-sm text-gray-500 truncate">Hey, how are you doing?</p>
                     </div>
                 </div>
