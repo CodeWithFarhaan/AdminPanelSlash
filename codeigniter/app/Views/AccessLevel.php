@@ -81,7 +81,7 @@
     <div class="bg-gray-100 flex justify-center items-center h-[80%]">
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-3xl font-semibold text-center text-gray-800">Change User Role</h1>
+                <h1 class="text-3xl font-semibold text-center text-gray-800">Access Level</h1>
             </div>
 
             <!-- Table Start -->

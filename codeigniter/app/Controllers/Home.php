@@ -20,7 +20,7 @@ class Home extends BaseController
 
     public function index(): string
     {
-        return view('welcome_message');
+        return view('signup');
     }
 
     //---------------------------------------users-------------------------------------------------------------
@@ -269,19 +269,17 @@ class Home extends BaseController
         $users = $user_model->findAll();
         return view('accesslevel', ['users' => $users]);
     }
-
+    
+    //---------------------------------------update accesslevel-------------------------------------------------------
     public function updateRole($id)
     {
-        // Get new role from POST data
         $newRole = $this->request->getPost('roles');
         $user_model = new UserModel();
-        // Update the role of the user with the given ID
         $user = $user_model->find($id);
         if ($user) {
             $user->userRole = $newRole;
             $user_model->save($user);
         }
-        // Redirect back to the access level page
         return redirect()->to('/accesslevel');
     }
 
