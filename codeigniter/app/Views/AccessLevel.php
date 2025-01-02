@@ -54,6 +54,7 @@
             </div>
             <div class="flex items-center space-x-4">
                 <h1 class="text-lg hidden sm:block"><?php print_r(ucfirst(session()->get('user')->name)) ?></h1>
+                <p class="text-black font-semibold">(<?php print_r(ucfirst(session()->get('user')->userRole)) ?>)</p>
                 <a href="/logout"
                     class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base">
                     Logout
@@ -107,7 +108,8 @@
                                     <select name="roles" class="px-4 py-2" onchange="this.form.submit()">
                                         <option value="admin" <?php echo ($user->userRole === 'admin') ? 'selected' : ''; ?>>
                                             Admin</option>
-                                        <option value="user" <?php echo ($user->userRole === 'user') ? 'selected' : ''; ?>>User
+                                        <option value="user" <?php echo ($user->userRole === 'user') ? 'selected' : ''; ?>>
+                                            User
                                         </option>
                                         <option value="teamLeader" <?php echo ($user->userRole === 'teamLeader') ? 'selected' : ''; ?>>Team Leader</option>
                                         <option value="superVisor" <?php echo ($user->userRole === 'superVisor') ? 'selected' : ''; ?>>Supervisor</option>

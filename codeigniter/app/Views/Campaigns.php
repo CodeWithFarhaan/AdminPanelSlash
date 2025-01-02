@@ -52,6 +52,7 @@
             </div>
             <div class="flex items-center space-x-4">
                 <h1 class="text-lg hidden sm:block"><?php print_r(ucfirst(session()->get('user')->name)) ?></h1>
+                <p class="text-black font-semibold">(<?php print_r(ucfirst(session()->get('user')->userRole)) ?>)</p>
                 <a href="/logout"
                     class="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base">
                     Logout
@@ -132,22 +133,35 @@
                 </thead>
                 <tbody>
                     <?php foreach ($campaigns as $row) { ?>
-                        <tr class="border-b">
-                            <td class="px-4 py-2"><?php echo $row->id; ?></td>
-                            <td class="px-4 py-2"><?php echo $row->name; ?></td>
-                            <td class="px-4 py-2"><?php echo $row->description; ?></td>
-                            <td class="px-4 py-2"><?php echo $row->client; ?></td>
-                            <td class="px-4 py-2 text-center">
-                                <button class="bg-green-400 text-white py-1 px-4 rounded hover:bg-green-500"
-                                    onclick="openEditModal(<?php echo $row->id; ?>,'<?php echo $row->name; ?>', '<?php echo $row->description; ?>','<?php echo $row->client; ?>')">
-                                    <i class="fa-solid fa-pen-to-square"></i> Edit
-                                </button>
-                                <button class="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-600"
-                                    onclick="confirmDelete('<?php echo $row->id; ?>')">
-                                    <i class="fa-solid fa-trash"></i> Delete
-                                </button>
-                            </td>
-                        </tr>
+                        <?php if (
+                            ($role === 'admin') ||
+                            (($role === 'user' || $role === 'supervisor' || $role === 'teamLeader') && $role !== 'admin')
+                        ): ?>
+                            <tr class="border-b">
+                                <td class="px-4 py-2"><?php echo $row->id; ?></td>
+                                <td class="px-4 py-2"><?php echo $row->name; ?></td>
+                                <td class="px-4 py-2"><?php echo $row->description; ?></td>
+                                <td class="px-4 py-2"><?php echo $row->client; ?></td>
+                                <td class="px-4 py-2 text-center">
+                                    <?php if ($role === 'admin'): ?>
+                                        <button class="bg-green-400 text-white py-1 px-4 rounded hover:bg-green-500"
+                                            onclick="openEditModal(<?php echo $row->id; ?>,'<?php echo $row->name; ?>', '<?php echo $row->description; ?>','<?php echo $row->client; ?>')">
+                                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                                        </button>
+                                        <button class="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-600"
+                                            onclick="confirmDelete('<?php echo $row->id; ?>')">
+                                            <i class="fa-solid fa-trash"></i> Delete
+                                        </button>
+                                    <?php elseif ($role === 'user' || $role === 'supervisor' || $role === 'teamLeader'): ?>
+                                        <button
+                                            class="bg-green-400 text-white py-1 px-4 rounded hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 mr-2"
+                                            disabled>
+                                            Your'e not an Admin
+                                        </button>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
                     <?php } ?>
                 </tbody>
             </table>
