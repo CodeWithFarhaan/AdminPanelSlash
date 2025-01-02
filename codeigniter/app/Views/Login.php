@@ -5,12 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.3/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="<?= base_url('Slashfavicon.png') ?>" type="image/x-icon">
     <title>Login</title>
 </head>
 
 <body class="bg-gray-100 flex items-center justify-center h-screen">
     <!-- Login Form Container -->
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-0">
+        <div class="flex justify-center mb-6">
+            <img src="<?= base_url('SlashLogo.png') ?>" alt="slashlogo" class="w-32 h-32 object-contain">
+        </div>
         <h1 class="text-3xl font-semibold text-center text-gray-800 mb-6">Login</h1>
 
         <!-- Form Start -->
@@ -46,6 +50,7 @@
         </form>
         <!-- Form End -->
     </div>
+
     <!-- Login Form Container End -->
 
 </body>

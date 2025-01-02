@@ -5,16 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="<?= base_url('Slashfavicon.png') ?>" type="image/x-icon">
     <title>Sign Up</title>
 </head>
 
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <!-- Signup Form Container -->
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md sm:w-4/5 md:w-1/2 lg:w-1/3 xl:w-1/4">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md sm:w-4/5 md:w-1/2 lg:w-1/3 xl:w-1/2 mx-auto">
+        <div class="flex justify-center mb-6">
+            <img src="<?= base_url('SlashLogo.png') ?>" alt="slashlogo" class="w-32 h-32 object-contain">
+        </div>
         <h1 class="text-3xl font-semibold text-center text-gray-800 mb-6">Sign Up</h1>
 
         <!-- Form Start -->
         <form action="<?= base_url("/signup") ?>" method="post">
+
             <!-- Name Field -->
             <div class="mb-4">
                 <label for="name" class="block text-gray-700 text-sm font-semibold mb-2">Name:</label>
@@ -38,6 +43,7 @@
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     placeholder="Enter your password" required>
             </div>
+
             <!-- Submit Button -->
             <button type="submit"
                 class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -52,6 +58,7 @@
         </form>
         <!-- Form End -->
     </div>
+
     <!-- Signup Form Container End -->
 
 </body>
