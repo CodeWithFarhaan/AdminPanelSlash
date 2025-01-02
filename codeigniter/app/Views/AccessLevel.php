@@ -86,7 +86,7 @@
             </div>
 
             <!-- Table Start -->
-            <table class="min-w-full table-auto border-collapse">
+            <table class="min-w-full table-auto border-collapse" id="AccessLevelTable">
                 <thead>
                     <tr class="bg-indigo-600 text-white">
                         <th class="px-4 py-2 text-center">ID</th>
@@ -124,9 +124,8 @@
             <!-- Pagination Controls -->
             <div id="pagination" class="flex justify-between mt-6">
                 <button onclick="changePage(-1)"
-                    class="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 focus:outline-none">Previous</button>
-                <button onclick="changePage(1)"
-                    class="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 focus:outline-none">Next</button>
+                    class="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">Previous</button>
+                <button onclick="changePage(1)" class="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">Next</button>
             </div>
         </div>
     </div>
@@ -135,9 +134,9 @@
         let currentPage = 1;
         const rowsPerPage = 3;
 
-        // Function to show the correct users for the current page
-        function paginateUsers() {
-            const rows = document.querySelectorAll('#accesslevelTable tbody tr');
+        // Function to show the correct rows for the current page
+        function paginateAccessLevel() {
+            const rows = document.querySelectorAll('#AccessLevelTable tbody tr');
             const totalRows = rows.length;
             const startIndex = (currentPage - 1) * rowsPerPage;
             const endIndex = startIndex + rowsPerPage;
@@ -153,7 +152,7 @@
 
         // Change page based on direction (-1 for previous, 1 for next)
         function changePage(direction) {
-            const rows = document.querySelectorAll('#accesslevelTable tbody tr');
+            const rows = document.querySelectorAll('#AccessLevelTable tbody tr');
             const totalRows = rows.length;
             const totalPages = Math.ceil(totalRows / rowsPerPage);
 
@@ -166,12 +165,12 @@
                 currentPage = totalPages;
             }
 
-            paginateUsers();
+            paginateAccessLevel();
         }
 
         // Initialize pagination on page load
         window.onload = function () {
-            paginateUsers();
+            paginateAccessLevel();
         };
 
         // Update role based on selection
