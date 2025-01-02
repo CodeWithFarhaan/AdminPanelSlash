@@ -160,3 +160,84 @@ INFO - 2025-01-02 07:30:38 --> Session: Class initialized using 'CodeIgniter\Ses
 INFO - 2025-01-02 07:30:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 INFO - 2025-01-02 07:30:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 INFO - 2025-01-02 07:30:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-01-02 07:37:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-01-02 07:37:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-01-02 07:37:49 --> ErrorException: Undefined variable $role
+[Method: GET, Route: campaigns]
+in APPPATH\Views\Campaigns.php on line 87.
+ 1 APPPATH\Views\Campaigns.php(87): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $role', 'C:\\xampp\\htdocs\\SlashCodeigniter\\codeigniter4\\AdminPanelSlash\\codeigniter\\app\\Views\\Campaigns.php', 87)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\SlashCodeigniter\\codeigniter4\\AdminPanelSlash\\codeigniter\\app\\Views\\Campaigns.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('/campaigns', [], true)
+ 5 APPPATH\Controllers\Home.php(170): view('/campaigns', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Home->campaigns()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\rewrite.php(44): require_once('C:\\xampp\\htdocs\\SlashCodeigniter\\codeigniter4\\AdminPanelSlash\\codeigniter\\public\\index.php')
+INFO - 2025-01-02 07:41:42 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-01-02 07:41:42 --> ErrorException: Undefined variable $campaign
+[Method: GET, Route: campaigns]
+in APPPATH\Views\Campaigns.php on line 134.
+ 1 APPPATH\Views\Campaigns.php(134): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $campaign', 'C:\\xampp\\htdocs\\SlashCodeigniter\\codeigniter4\\AdminPanelSlash\\codeigniter\\app\\Views\\Campaigns.php', 134)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\SlashCodeigniter\\codeigniter4\\AdminPanelSlash\\codeigniter\\app\\Views\\Campaigns.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('/campaigns', [], true)
+ 5 APPPATH\Controllers\Home.php(172): view('/campaigns', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Home->campaigns()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\rewrite.php(44): require_once('C:\\xampp\\htdocs\\SlashCodeigniter\\codeigniter4\\AdminPanelSlash\\codeigniter\\public\\index.php')
+INFO - 2025-01-02 07:42:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-01-02 07:42:04 --> ErrorException: Undefined property: stdClass::$email
+[Method: GET, Route: campaigns]
+in APPPATH\Views\Campaigns.php on line 142.
+ 1 APPPATH\Views\Campaigns.php(142): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined property: stdClass::$email', 'C:\\xampp\\htdocs\\SlashCodeigniter\\codeigniter4\\AdminPanelSlash\\codeigniter\\app\\Views\\Campaigns.php', 142)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\SlashCodeigniter\\codeigniter4\\AdminPanelSlash\\codeigniter\\app\\Views\\Campaigns.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('/campaigns', [], true)
+ 5 APPPATH\Controllers\Home.php(172): view('/campaigns', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Home->campaigns()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\rewrite.php(44): require_once('C:\\xampp\\htdocs\\SlashCodeigniter\\codeigniter4\\AdminPanelSlash\\codeigniter\\public\\index.php')
+INFO - 2025-01-02 07:44:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-01-02 07:44:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-01-02 07:44:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-01-02 07:44:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-01-02 07:44:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-01-02 07:44:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2025-01-02 07:44:58 --> ErrorException: Undefined property: stdClass::$userRole
+[Method: GET, Route: campaigns]
+in APPPATH\Views\Campaigns.php on line 137.
+ 1 APPPATH\Views\Campaigns.php(137): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined property: stdClass::$userRole', 'C:\\xampp\\htdocs\\SlashCodeigniter\\codeigniter4\\AdminPanelSlash\\codeigniter\\app\\Views\\Campaigns.php', 137)
+ 2 SYSTEMPATH\View\View.php(234): include('C:\\xampp\\htdocs\\SlashCodeigniter\\codeigniter4\\AdminPanelSlash\\codeigniter\\app\\Views\\Campaigns.php')
+ 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH\Common.php(1171): CodeIgniter\View\View->render('/campaigns', [], true)
+ 5 APPPATH\Controllers\Home.php(172): view('/campaigns', [...])
+ 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Home->campaigns()
+ 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH\rewrite.php(44): require_once('C:\\xampp\\htdocs\\SlashCodeigniter\\codeigniter4\\AdminPanelSlash\\codeigniter\\public\\index.php')
+INFO - 2025-01-02 07:46:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-01-02 07:46:59 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-01-02 07:46:59 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-01-02 07:47:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-01-02 07:47:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-01-02 07:47:11 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-01-02 07:47:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-01-02 07:47:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-01-02 07:47:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-01-02 07:47:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-01-02 07:47:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.

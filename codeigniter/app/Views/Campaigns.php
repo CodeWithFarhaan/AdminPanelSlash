@@ -84,7 +84,9 @@
             <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
                 <h1 class="text-3xl font-semibold text-gray-800 mb-4 sm:mb-0 sm:text-left">Campaign</h1>
                 <div class="text-4xl cursor-pointer" onclick="openAddCampaign()">
-                    <p>+</p>
+                    <?php if ($role === 'admin'): ?>
+                        <p>+</p>
+                    <?php endif; ?>
                 </div>
                 <!-- Add Campaign Modal -->
                 <div id="addModal"

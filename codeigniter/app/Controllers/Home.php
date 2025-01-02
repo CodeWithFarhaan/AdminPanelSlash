@@ -167,7 +167,9 @@ class Home extends BaseController
         }
         $campaign_model = new CampaignModel();
         $campaigns = $campaign_model->findAll();
-        return view('/campaigns', ['campaigns' => $campaigns]);
+        $loggedinCampaign = $this->session->get('user');
+        $role = $loggedinCampaign->userRole;
+        return view('/campaigns', ['campaigns' => $campaigns, 'role' => $role, 'loggedinCampaign' => $loggedinCampaign]);
     }
 
     //---------------------------------------addcampaign(+)--------------------------------------------------------   
