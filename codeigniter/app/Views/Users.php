@@ -83,10 +83,13 @@
         <!-- Dashboard Table Container -->
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
             <!-- Header Section with Space Between -->
+
             <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
                 <h1 class="text-3xl font-semibold text-gray-800 mb-4 sm:mb-0 sm:text-left">Users</h1>
                 <div class="text-4xl cursor-pointer" onclick="openAddModal()">
-                    <p>+</p>
+                    <?php if ($role === 'admin'): ?>
+                        <p>+</p>
+                    <?php endif; ?>
                 </div>
                 <!-- Add User Modal -->
                 <div id="addModal"
@@ -143,27 +146,43 @@
                 </thead>
                 <tbody>
                     <?php foreach ($users as $row) { ?>
-                        <tr class="border-b">
-                            <td class="px-4 py-2"><?php echo $row->id; ?></td>
-                            <td class="px-4 py-2"><?php echo $row->name; ?></td>
-                            <td class="px-4 py-2"><?php echo $row->email; ?></td>
-                            <td class="px-4 py-2"><?php echo $row->userRole; ?></td>
-                            <td class="px-4 py-2 text-center">
-                                <!-- Edit Button with Data -->
-                                <button
-                                    class="bg-green-400 text-white py-1 px-4 rounded hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 mr-2"
-                                    onclick="openEditModal(<?php echo $row->id; ?>,'<?php echo $row->name; ?>', '<?php echo $row->email; ?>','<?php echo $row->userRole; ?>')">
-                                    <i class="fa-solid fa-pen-to-square"></i> Edit
-                                </button>
-
-                                <!-- Delete Button with Data -->
-                                <button
-                                    class="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
-                                    onclick="confirmDelete('<?php echo $row->id; ?>')">
-                                    <i class="fa-solid fa-trash"></i> Delete
-                                </button>
-                            </td>
-                        </tr>
+                        <?php if (
+                            ($role === 'admin') ||
+                            (($role === 'user' || $role === 'supervisor' || $role === 'teamLeader') && $row->userRole !== 'admin')
+                        ): ?>
+                            <tr class="border-b">
+                                <td class="px-4 py-2"><?php echo $row->id; ?></td>
+                                <td class="px-4 py-2"><?php echo $row->name; ?></td>
+                                <td class="px-4 py-2"><?php echo $row->email; ?></td>
+                                <td class="px-4 py-2"><?php echo $row->userRole; ?></td>
+                                <td class="px-4 py-2 text-center">
+                                    <!-- Admin can see both Edit and Delete buttons for all users -->
+                                    <?php if ($role === 'admin'): ?>
+                                        <button
+                                            class="bg-green-400 text-white py-1 px-4 rounded hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 mr-2"
+                                            onclick="openEditModal(<?php echo $row->id; ?>,'<?php echo $row->name; ?>', '<?php echo $row->email; ?>','<?php echo $row->userRole; ?>')">
+                                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                                        </button>
+                                        <button
+                                            class="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                            onclick="confirmDelete('<?php echo $row->id; ?>')">
+                                            <i class="fa-solid fa-trash"></i> Delete
+                                        </button>
+                                    <?php elseif (($role === 'user' || $role === 'supervisor' || $role === 'teamLeader') && $row->userRole === $role): ?>
+                                        <button
+                                            class="bg-green-400 text-white py-1 px-4 rounded hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 mr-2"
+                                            onclick="openEditModal(<?php echo $row->id; ?>,'<?php echo $row->name; ?>', '<?php echo $row->email; ?>','<?php echo $row->userRole; ?>')">
+                                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                                        </button>
+                                        <button
+                                            class="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                            onclick="confirmDelete('<?php echo $row->id; ?>')">
+                                            <i class="fa-solid fa-trash"></i> Delete
+                                        </button>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
                     <?php } ?>
                 </tbody>
             </table>
@@ -214,7 +233,7 @@
     <script>
         // Pagination state variables
         let currentPage = 1;
-        const rowsPerPage = 5;
+        const rowsPerPage = 3;
 
         // Function to show the correct users for the current page
         function paginateUsers() {

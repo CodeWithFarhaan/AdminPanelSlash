@@ -31,7 +31,9 @@ class Home extends BaseController
         }
         $user_model = new UserModel();
         $users = $user_model->findAll();
-        return view('/users', ['users' => $users]);
+        $loggedinUser = $this->session->get('user');
+        $role = $loggedinUser->userRole;
+        return view('/users', ['users' => $users, 'role' => $role, 'loggedinUser' => $loggedinUser]);
     }
 
     //---------------------------------------adduser(+)--------------------------------------------------------
@@ -131,27 +133,15 @@ class Home extends BaseController
         if ($this->session->has('user')) {
             return redirect()->to('/users');
         }
-
         if (isset($_POST['email'])) {
             $user_model = new UserModel();
             $email = $this->request->getPost('email');
             $password = $this->request->getPost('password');
-
-            // Find the user by email
             $user = $user_model->where('email', $email)->first();
-
             if ($user) {
-                // Check if the password is correct
                 if (password_verify($password, $user->password)) {
-                    // Check if the user is an admin
-                    if ($user->userRole === 'admin') {
-                        // Set the session if the user is an admin
-                        $this->session->set("user", $user);
-                        return redirect()->to('/users')->with('success', 'Login successful!');
-                    } else {
-                        // If the user is not an admin, deny login
-                        return redirect()->back()->with('error', "Your'e not an admin sorry...");
-                    }
+                    $this->session->set("user", $user);
+                    return redirect()->to('/users')->with('success', 'Login successful!');
                 } else {
                     return redirect()->back()->with('error', 'Invalid password. Please try again.');
                 }
@@ -159,11 +149,8 @@ class Home extends BaseController
                 return redirect()->back()->with('error', 'Invalid email. Please try again.');
             }
         }
-
         return view('login');
     }
-
-
     //----------------------------------------------logout---------------------------------------------------------------
     public function logout()
     {
@@ -257,9 +244,9 @@ class Home extends BaseController
         if (!$this->session->has('user')) {
             return redirect()->to('/login');
         }
-        $chat_model = new ChatModel();
-        $chats = $chat_model->findAll();
-        return view('/chats', ['chats' => $chats]);
+        $user_model = new UserModel();
+        $users = $user_model->findAll();
+        return view('/chats', ['users' => $users]);
     }
 
     //---------------------------------------accesslevel-------------------------------------------------------------

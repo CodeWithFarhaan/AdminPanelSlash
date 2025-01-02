@@ -131,7 +131,7 @@
     <script>
         // Pagination state variables
         let currentPage = 1;
-        const rowsPerPage = 5;
+        const rowsPerPage = 3;
 
         // Function to show the correct users for the current page
         function paginateUsers() {

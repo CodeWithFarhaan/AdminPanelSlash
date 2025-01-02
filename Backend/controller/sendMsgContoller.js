@@ -2,7 +2,7 @@ import { initCollection, initMongoDB } from "../config/db.js";
 
 
 const sendMessage = async (req, res) => {
-    const { name ,email, message } = req.body;
+    const { receiver, message } = req.body;
     try {
         const databaseName = await initMongoDB();
         const messageCollection = await initCollection(databaseName);
@@ -11,7 +11,7 @@ const sendMessage = async (req, res) => {
         const timestamp = new Date(); // Current date and time
         
         // Insert the message along with the timestamp
-        const result = await messageCollection.insertOne({ name, email, message, timestamp });
+        const result = await messageCollection.insertOne({ receiver, message, timestamp });
         
         if (!result.acknowledged) {
             return res.status(400).json({ message: 'Error sending message' });
