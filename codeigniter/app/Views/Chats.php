@@ -68,7 +68,7 @@
             <p class="text-lg font-semibold">Reports</p>
             <div class="dropdown p-2">
                 <a class="text-lg font-semibold px-4 py-2" href="#">Operations</a>
-                <div class="dropdown-content">
+                <div class="rounded-md dropdown-content">
                     <a href="/users">Users</a>
                     <a href="/campaigns">Campaigns</a>
                     <a href="/accesslevel">Access Level</a>
