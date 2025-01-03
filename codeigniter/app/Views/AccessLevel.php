@@ -103,23 +103,30 @@
                             <td class="px-4 py-2 text-center"><?php echo $user->name; ?></td>
                             <td class="px-4 py-2 text-center"><?php echo $user->email; ?></td>
                             <td class="px-4 py-2 text-center"><?php echo $user->userRole; ?></td>
+
                             <td class="px-4 py-2 text-center">
-                                <form action="/update-role/<?php echo $user->id; ?>" method="POST">
-                                    <select name="roles" class="px-4 py-2" onchange="this.form.submit()">
-                                        <option value="admin" <?php echo ($user->userRole === 'admin') ? 'selected' : ''; ?>>
-                                            Admin</option>
-                                        <option value="user" <?php echo ($user->userRole === 'user') ? 'selected' : ''; ?>>
-                                            User
-                                        </option>
-                                        <option value="teamLeader" <?php echo ($user->userRole === 'teamLeader') ? 'selected' : ''; ?>>Team Leader</option>
-                                        <option value="superVisor" <?php echo ($user->userRole === 'superVisor') ? 'selected' : ''; ?>>Supervisor</option>
-                                    </select>
-                                </form>
+                                <?php if ($role === 'admin'): ?>
+                                    <!-- If the logged-in user is an admin, show the role update form -->
+                                    <form action="/update-role/<?php echo $user->id; ?>" method="POST">
+                                        <select name="roles" class="px-4 py-2" onchange="this.form.submit()">
+                                            <option value="admin" <?php echo ($user->userRole === 'admin') ? 'selected' : ''; ?>>
+                                                Admin</option>
+                                            <option value="user" <?php echo ($user->userRole === 'user') ? 'selected' : ''; ?>>
+                                                User</option>
+                                            <option value="teamLeader" <?php echo ($user->userRole === 'teamLeader') ? 'selected' : ''; ?>>Team Leader</option>
+                                            <option value="superVisor" <?php echo ($user->userRole === 'superVisor') ? 'selected' : ''; ?>>Supervisor</option>
+                                        </select>
+                                    </form>
+                                <?php else: ?>
+                                    <!-- If the user is not an admin, show a message saying they can't update the role -->
+                                    <p class="text-gray-600">You cannot update roles.</p>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
+
             <!-- Table End -->
             <!-- Pagination Controls -->
             <div id="pagination" class="flex justify-between mt-6">

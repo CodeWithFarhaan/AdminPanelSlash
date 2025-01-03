@@ -248,7 +248,8 @@ class Home extends BaseController
         }
         $user_model = new UserModel();
         $users = $user_model->findAll();
-        return view('/chats', ['users' => $users]);
+        $usersCount = count($users);  // Count how many users are in the array
+        return view('/chats', ['users' => $users, 'usersCount' => $usersCount]);
     }
 
     //---------------------------------------accesslevel-------------------------------------------------------------
@@ -256,13 +257,19 @@ class Home extends BaseController
     {
         $user_model = new UserModel();
         $users = $user_model->findAll();
-        return view('accesslevel', ['users' => $users]);
+        $loggedinUser = $this->session->get('user');
+        $role = $loggedinUser->userRole;
+        return view('accesslevel', ['users' => $users, 'role' => $role, 'loggedinUser' => $loggedinUser]);
     }
-    
+
     //---------------------------------------update accesslevel-------------------------------------------------------
     public function updateRole($id)
     {
         $newRole = $this->request->getPost('roles');
+        $loggedinUser = $this->session->get('user');
+        if ($loggedinUser->userRole !== 'admin') {
+            return redirect()->to('/accesslevel')->with('error', 'You do not have permission to change roles.');
+        }
         $user_model = new UserModel();
         $user = $user_model->find($id);
         if ($user) {

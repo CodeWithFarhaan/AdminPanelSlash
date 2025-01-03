@@ -1,15 +1,19 @@
 {
-  "name": "backend",
+  "name": "server",
   "version": "1.0.0",
+  "description": "chat server",
   "main": "server.js",
   "type": "module",
   "scripts": {
+    "test": "npm start",
     "start": "nodemon server.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "chat",
+    "socket"
+  ],
+  "author": "Chaudhary Farhaan",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",

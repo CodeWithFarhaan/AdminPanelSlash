@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import connectDB from "./config/db.js";
 import dotenv from "dotenv";
 import router from "./routes/routes.js";
+import { Timestamp } from "mongodb";
 
 const app = express();
 dotenv.config();
@@ -30,6 +31,14 @@ io.on("connection", (socket) => {
     socket.join(data.data);
   });
   socket.on("send_message", async (data) => {
-    socket.broadcast.emit("receive_message", data.message);
+    const { sender, receiver, message } = data;
+    socket.to(receiver).emit("receive_message",
+      {
+        sender,
+        receiver,
+        message,
+        timestamp: new Date().toISOString(),
+      }
+    );
   });
 });

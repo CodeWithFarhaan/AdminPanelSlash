@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="shortcut icon" href="<?= base_url('Slashfavicon.png') ?>" type="image/x-icon">
+    <link rel="stylesheet" href="styles/style.css">
     <title>Chat</title>
     <style>
         .dropdown {
@@ -77,63 +78,60 @@
             </div>
         </div>
     </nav>
-    <div class="h-screen flex bg-gray-100">
-        <nav class="w-80 bg-white border-r border-gray-200 flex-none">
-            <div class="p-4 border-b border-gray-200">
-                <h1 class="text-xl font-semibold text-gray-800">Users</h1>
+    <main>
+        <div class="container">
+            <!-- Sidebar for User List -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h3>People</h3>
+                    <h3 class="users-count"><?php echo $usersCount; ?></h3>
+                </div>
+                <div class="users-list overflow-y-auto">
+                    <?php
+                    $loggedInUser = session()->get('user')->email;
+                    foreach ($users as $row) {
+                        if ($row->email === $loggedInUser) {
+                            continue;
+                        } ?>
+                        <div class="contact hover:bg-gray-100 p-4 cursor-pointer border-b border-gray-200 flex items-center space-x-4"
+                            onclick="selectReceiver('<?php echo $row->email; ?>', '<?php echo $row->name; ?>')">
+                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde" alt="Contact"
+                                class="w-12 h-12 rounded-full object-cover">
+                            <div class="flex-1">
+                                <h3 class="font-medium text-gray-800"><?php echo $row->name; ?></h3>
+                                <p class="text-sm text-gray-500 truncate">this is message</p>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </div>
             </div>
-            <div class="overflow-y-auto h-[calc(100vh-73px)]">
-                <?php $loggedInUser = session()->get('user')->email;
-                foreach ($users as $row) {
-                    // PRINT_R($users); DIE;
-                    if ($row->email === $loggedInUser) {
-                        continue;
-                    } ?>
-                    <div class="contact hover:bg-gray-50 p-4 cursor-pointer border-b border-gray-100 flex items-center space-x-4"
-                        onclick="selectReceiver('<?php echo $row->email; ?>', '<?php echo $row->name; ?>')">
-                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde" alt="Contact 1"
+
+            <!-- Chat Area -->
+            <div class="chat-area">
+                <div class="chat-header">
+                    <div class="flex items-center">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde" alt="User Image"
                             class="w-12 h-12 rounded-full object-cover">
-                        <div class="flex-1">
-                            <h3 class="font-medium text-gray-800"><?php echo $row->name; ?></h3>
-                            <p class="text-sm text-gray-500 truncate">this is message</p>
+                        <div class="ml-3">
+                            <h2 class="font-medium text-gray-800" id="currentUserName"><?php echo $row->name; ?></h2>
+                            <div class="flex items-center space-x-2">
+                                <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                <span class="text-sm text-gray-500">Online</span>
+                            </div>
                         </div>
                     </div>
-                <?php } ?>
-            </div>
-        </nav>
-
-        <main class="flex-1 flex flex-col">
-            <header class="bg-white border-b border-gray-200 p-4 flex items-center space-x-4">
-                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde" alt="Current chat"
-                    class="w-12 h-12 rounded-full object-cover">
-                <div class="flex-1">
-                    <h2 class="font-medium text-gray-800" id="currentUserName"><?php $row->name; ?></h2>
-                    <div class="flex items-center space-x-2">
-                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-                        <span class="text-sm text-gray-500">Online</span>
-                    </div>
                 </div>
-            </header>
-
-            <div class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50" id="messages">
-                <!-- Messages will be rendered here dynamically -->
-            </div>
-
-            <div class="bg-white border-t border-gray-200 p-4">
-                <div class="flex space-x-4 items-center">
-                    <input type="text" id="message" placeholder="Type a message..."
-                        class="flex-1 rounded-full border border-gray-300 px-4 py-2 focus:outline-none focus:border-blue-500"
-                        aria-label="Type a message">
-                    <button
-                        class="bg-blue-500 text-white rounded-full p-3 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                        onclick="sendMessage()">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
+                <div id="messages">
+                    <!-- Dynamic messages go here -->
+                </div>
+                <div class="message-input">
+                    <input id="message" type="text" placeholder="Type Your Message..."
+                        class="flex-1 rounded-full border border-gray-300 px-4 py-2 focus:outline-none focus:border-blue-500">
+                    <button type="submit" onclick="sendMessage()" class="send-btn">SEND</button>
                 </div>
             </div>
-        </main>
-    </div>
-
+        </div>
+    </main>
     <!-- --------------------------------------------script--------------------------------------------------------------------- -->
     <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"
         integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+"
@@ -255,7 +253,7 @@
                 const response = await fetch('http://localhost:3000/api/get-message', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json;charset=utf-8' },
-                    body: JSON.stringify({ sender, receiver }),
+                    body: JSON.stringify({ sender, receiver: selectedReceiver }),
                 });
 
                 if (!response.ok) {
