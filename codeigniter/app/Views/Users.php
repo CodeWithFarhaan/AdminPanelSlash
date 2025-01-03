@@ -175,11 +175,6 @@
                                             onclick="openEditModal(<?php echo $row->id; ?>,'<?php echo $row->name; ?>', '<?php echo $row->email; ?>','<?php echo $row->userRole; ?>')">
                                             <i class="fa-solid fa-pen-to-square"></i> Edit
                                         </button>
-                                        <button
-                                            class="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
-                                            onclick="confirmDelete('<?php echo $row->id; ?>')">
-                                            <i class="fa-solid fa-trash"></i> Delete
-                                        </button>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -199,37 +194,40 @@
     </div>
     <!-- Edit User Modal -->
     <div id="editModal" class="absolute inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 hidden">
-        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm mx-4 sm:mx-8">
-            <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">Edit User</h2>
-            <form id="editForm" action="/updateuser" method="POST">
-                <div class="mb-4" hidden>
-                    <label for="editId" class="block text-gray-700">Id</label>
-                    <input type="text" name="id" id="editId" class="w-full p-2 border border-gray-300 rounded mt-2"
-                        readonly required>
-                </div>
-                <div class="mb-4">
-                    <label for="editName" class="block text-gray-700">Name</label>
-                    <input type="text" name="name" id="editName" class="w-full p-2 border border-gray-300 rounded mt-2"
-                        required>
-                </div>
-                <div class="mb-4">
-                    <label for="editEmail" class="block text-gray-700">Email</label>
-                    <input type="email" name="email" id="editEmail"
-                        class="w-full p-2 border border-gray-300 rounded mt-2" required>
-                </div>
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm mx-4 sm:mx-8">
+        <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">Edit User</h2>
+        <form id="editForm" action="/updateuser" method="POST">
+            <div class="mb-4" hidden>
+                <label for="editId" class="block text-gray-700">Id</label>
+                <input type="text" name="id" id="editId" class="w-full p-2 border border-gray-300 rounded mt-2" readonly required>
+            </div>
+            <div class="mb-4">
+                <label for="editName" class="block text-gray-700">Name</label>
+                <input type="text" name="name" id="editName" class="w-full p-2 border border-gray-300 rounded mt-2" required>
+            </div>
+            <div class="mb-4">
+                <label for="editEmail" class="block text-gray-700">Email</label>
+                <input type="email" name="email" id="editEmail" class="w-full p-2 border border-gray-300 rounded mt-2" required>
+            </div>
+
+            <!-- Conditionally show UserRole input based on the user's role -->
+            <?php if ($role === 'admin'): ?>
                 <div class="mb-4">
                     <label for="edituserRole" class="block text-gray-700">UserRole</label>
-                    <input type="text" name="userRole" id="edituserRole"
-                        class="w-full p-2 border border-gray-300 rounded mt-2" required>
+                    <input type="text" name="userRole" id="edituserRole" class="w-full p-2 border border-gray-300 rounded mt-2" required>
                 </div>
-                <div class="flex flex-col sm:flex-row justify-between">
-                    <button type="button" onclick="closeEditModal()"
-                        class="bg-gray-400 text-white px-4 py-2 rounded mb-2 sm:mb-0">Cancel</button>
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save Changes</button>
-                </div>
-            </form>
-        </div>
+            <?php else: ?>
+                <input type="hidden" name="userRole" id="edituserRole" value="<?= $loggedinUser->userRole ?>">
+            <?php endif; ?>
+
+            <div class="flex flex-col sm:flex-row justify-between">
+                <button type="button" onclick="closeEditModal()" class="bg-gray-400 text-white px-4 py-2 rounded mb-2 sm:mb-0">Cancel</button>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save Changes</button>
+            </div>
+        </form>
     </div>
+</div>
+
 
     <script>
         // Pagination state variables

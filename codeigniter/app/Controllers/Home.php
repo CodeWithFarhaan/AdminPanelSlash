@@ -67,20 +67,32 @@ class Home extends BaseController
         $userRole = $this->request->getPost('userRole');
         $updatedData = [];
 
-        if ($name)
-            $updatedData['name'] = $name;
-        if ($email)
-            $updatedData['email'] = $email;
-        if ($userRole)
-            $updatedData['userRole'] = $userRole;
+        $loggedinUser = $this->session->get('user');
+        $role = $loggedinUser->userRole;
 
+        // Only admin can update userRole
+        if ($role === 'admin' && $userRole) {
+            $updatedData['userRole'] = $userRole;
+        }
+
+        if ($name) {
+            $updatedData['name'] = $name;
+        }
+        if ($email) {
+            $updatedData['email'] = $email;
+        }
+
+        // Update the user
         $result = $user_model->update($id, $updatedData);
+
+        // Check the result and redirect accordingly
         if (is_object($result) && method_exists($result, 'getStatusCode') && $result->getStatusCode() == 200) {
             return redirect()->to("/users")->with("success", "User updated successfully");
         } else {
             return redirect()->to("/users")->with("error", "Failed to update user");
         }
     }
+
 
     //---------------------------------------deleteuser--------------------------------------------------------
     public function deleteUser($id)
