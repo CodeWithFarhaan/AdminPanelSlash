@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\AuditLogModel;
 use App\Models\UserModel;
 use App\Models\CampaignModel;
 use App\Models\AccessLevelModel;
@@ -260,8 +261,10 @@ class Home extends BaseController
         }
         $user_model = new UserModel();
         $users = $user_model->findAll();
+        $loggedinUser = $this->session->get('user');
+        $role = $loggedinUser->userRole;
         $usersCount = count($users);  // Count how many users are in the array
-        return view('/chats', ['users' => $users, 'usersCount' => $usersCount]);
+        return view('/chats', ['users' => $users, 'usersCount' => $usersCount, 'role' => $role, 'loggedinUser' => $loggedinUser]);
     }
 
     //---------------------------------------accesslevel-------------------------------------------------------------
@@ -290,5 +293,18 @@ class Home extends BaseController
         }
         return redirect()->to('/accesslevel');
     }
+    
 
+    //---------------------------------------auditlog-------------------------------------------------------------
+    public function auditlog()
+    {
+        if (!$this->session->has('user')) {
+            return redirect()->to('/login');
+        }
+        $auditlog_model = new AuditLogModel();
+        $loggedinUser = $this->session->get('user');
+        $role = $loggedinUser->userRole;
+        $auditlogs = $auditlog_model->findAll();
+        return view('/auditlog', ['auditlogs' => $auditlogs, 'role' => $role, 'loggedinUser' => $loggedinUser]);
+    }
 }

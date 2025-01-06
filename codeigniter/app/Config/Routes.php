@@ -31,4 +31,6 @@ $routes->match(['GET', 'POST'], '/chats', 'Home::chats');
 $routes->get('/accesslevel', 'Home::accessLevel');
 $routes->post('/update-role/(:num)', 'Home::updateRole/$1');
 
+$routes->match(['GET', 'POST'], '/auditlog', 'Home::auditlog');
+
 

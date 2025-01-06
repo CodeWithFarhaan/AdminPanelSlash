@@ -61,22 +61,57 @@
         </div>
     </nav>
 
-    <nav class="mb-5 bg-gray-300 text-black px-4 py-4">
-        <div class="flex justify-evenly items-center">
-            <p class="text-lg font-semibold">Dashboard</p>
-            <p class="text-lg font-semibold">Live</p>
-            <p class="text-lg font-semibold">Conversations</p>
-            <p class="text-lg font-semibold">Reports</p>
-            <div class="dropdown p-2">
-                <a class="text-lg font-semibold px-4 py-2" href="#">Operations</a>
-                <div class="rounded-md dropdown-content">
-                    <a href="/users">Users</a>
-                    <a href="/campaigns">Campaigns</a>
-                    <a href="/accesslevel">Access Level</a>
-                    <a href="/chats">Chat</a>
-                </div>
+    <nav class="bg-gray-300 text-black px-4 py-4">
+        <?php if (
+            $role === 'admin' ||
+            ($role === 'user' || $role === 'supervisor' || $role === 'teamLeader')
+        ): ?>
+            <div class="flex justify-evenly items-center">
+
+                <!-- For Admin: Full access to all sections -->
+                <?php if ($role === 'admin'): ?>
+                    <p class="px-8 text-lg font-semibold">Dashboard</p>
+                    <p class="text-lg font-semibold">Live</p>
+
+                    <!-- Conversations section for Admin -->
+                    <div class="dropdown p-2">
+                        <a class="text-lg font-semibold px-4 py-2" href="#">Conversations</a>
+                        <div class="rounded-md dropdown-content">
+                            <a href="/chats">Chat</a>
+                        </div>
+                    </div>
+                    <div class="dropdown p-2">
+                        <a class="text-lg font-semibold px-4 py-2" href="#">Report</a>
+                        <div class="rounded-md dropdown-content">
+                            <a href="/auditlog">Audit Log</a>
+                        </div>
+                    </div>
+                    <div class="dropdown p-2">
+                        <a class="text-lg font-semibold px-4 py-2" href="#">Operations</a>
+                        <div class="rounded-md dropdown-content">
+                            <a href="/users">Users</a>
+                            <a href="/campaigns">Campaigns</a>
+                            <a href="/accesslevel">Access Level</a>
+                        </div>
+                    </div>
+                    <!-- For Supervisor, User, Team Leader: Limited access -->
+                <?php elseif ($role === 'user' || $role === 'supervisor' || $role === 'teamLeader'): ?>
+                    <!-- Conversations section for User, Supervisor, Team Leader -->
+                    <div class="dropdown p-2">
+                        <a class="text-lg font-semibold px-4 py-2" href="#">Conversations</a>
+                        <div class="rounded-md dropdown-content">
+                            <a href="/chats">Chat</a>
+                        </div>
+                    </div>
+                    <div class="dropdown p-2">
+                        <a class="text-lg font-semibold px-4 py-2" href="#">Operations</a>
+                        <div class="rounded-md dropdown-content">
+                            <a href="/campaigns">Campaigns</a>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
-        </div>
+        <?php endif; ?>
     </nav>
 
     <!-- Main content -->
@@ -128,7 +163,9 @@
                         <th class="px-4 py-2 text-left">Name</th>
                         <th class="px-4 py-2 text-left">Description</th>
                         <th class="px-4 py-2 text-left">Client</th>
-                        <th class="px-4 py-2 text-center">Actions</th>
+                        <?php if ($role === 'admin'): ?>
+                            <th class="px-4 py-2 text-center">Actions</th>
+                        <?php endif; ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -142,8 +179,8 @@
                                 <td class="px-4 py-2"><?php echo $row->name; ?></td>
                                 <td class="px-4 py-2"><?php echo $row->description; ?></td>
                                 <td class="px-4 py-2"><?php echo $row->client; ?></td>
-                                <td class="px-4 py-2 text-center">
-                                    <?php if ($role === 'admin'): ?>
+                                <?php if ($role === 'admin'): ?>
+                                    <td class="px-4 py-2 text-center">
                                         <button class="bg-green-400 text-white py-1 px-4 rounded hover:bg-green-500"
                                             onclick="openEditModal(<?php echo $row->id; ?>,'<?php echo $row->name; ?>', '<?php echo $row->description; ?>','<?php echo $row->client; ?>')">
                                             <i class="fa-solid fa-pen-to-square"></i> Edit
@@ -151,12 +188,6 @@
                                         <button class="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-600"
                                             onclick="confirmDelete('<?php echo $row->id; ?>')">
                                             <i class="fa-solid fa-trash"></i> Delete
-                                        </button>
-                                    <?php elseif ($role === 'user' || $role === 'supervisor' || $role === 'teamLeader'): ?>
-                                        <button
-                                            class="bg-green-400 text-white py-1 px-4 rounded hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 mr-2"
-                                            disabled>
-                                            Your'e not an Admin
                                         </button>
                                     <?php endif; ?>
                                 </td>

@@ -62,29 +62,65 @@
             </div>
         </div>
     </nav>
-    <nav class="mb-5 bg-gray-300 text-black px-4 py-4">
-        <div class="flex justify-evenly items-center">
-            <p class="text-lg font-semibold">Dashboard</p>
-            <p class="text-lg font-semibold">Live</p>
-            <p class="text-lg font-semibold">Conversations</p>
-            <p class="text-lg font-semibold">Reports</p>
-            <div class="dropdown p-2">
-                <a class="text-lg font-semibold px-4 py-2" href="#">Operations</a>
-                <div class="rounded-md dropdown-content">
-                    <a href="/users">Users</a>
-                    <a href="/campaigns">Campaigns</a>
-                    <a href="/accesslevel">Access Level</a>
-                    <a href="/chats">Chat</a>
-                </div>
+    <nav class="bg-gray-300 text-black px-4 py-4">
+        <?php if (
+            $role === 'admin' ||
+            ($role === 'user' || $role === 'supervisor' || $role === 'teamLeader')
+        ): ?>
+            <div class="flex justify-evenly items-center">
+
+                <!-- For Admin: Full access to all sections -->
+                <?php if ($role === 'admin'): ?>
+                    <p class="px-8 text-lg font-semibold">Dashboard</p>
+                    <p class="text-lg font-semibold">Live</p>
+
+                    <!-- Conversations section for Admin -->
+                    <div class="dropdown p-2">
+                        <a class="text-lg font-semibold px-4 py-2" href="#">Conversations</a>
+                        <div class="rounded-md dropdown-content">
+                            <a href="/chats">Chat</a>
+                        </div>
+                    </div>
+                    <div class="dropdown p-2">
+                        <a class="text-lg font-semibold px-4 py-2" href="#">Report</a>
+                        <div class="rounded-md dropdown-content">
+                            <a href="/auditlog">Audit Log</a>
+                        </div>
+                    </div>
+                    <div class="dropdown p-2">
+                        <a class="text-lg font-semibold px-4 py-2" href="#">Operations</a>
+                        <div class="rounded-md dropdown-content">
+                            <a href="/users">Users</a>
+                            <a href="/campaigns">Campaigns</a>
+                            <a href="/accesslevel">Access Level</a>
+                        </div>
+                    </div>
+                    <!-- For Supervisor, User, Team Leader: Limited access -->
+                <?php elseif ($role === 'user' || $role === 'supervisor' || $role === 'teamLeader'): ?>
+                    <!-- Conversations section for User, Supervisor, Team Leader -->
+                    <div class="dropdown p-2">
+                        <a class="text-lg font-semibold px-4 py-2" href="#">Conversations</a>
+                        <div class="rounded-md dropdown-content">
+                            <a href="/chats">Chat</a>
+                        </div>
+                    </div>
+                    <div class="dropdown p-2">
+                        <a class="text-lg font-semibold px-4 py-2" href="#">Operations</a>
+                        <div class="rounded-md dropdown-content">
+                            <a href="/campaigns">Campaigns</a>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
-        </div>
+        <?php endif; ?>
     </nav>
+
+
     <!-- Main content -->
     <div class="flex justify-center items-center p-4">
         <!-- Dashboard Table Container -->
         <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
             <!-- Header Section with Space Between -->
-
             <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
                 <h1 class="text-3xl font-semibold text-gray-800 mb-4 sm:mb-0 sm:text-left">Users</h1>
                 <div class="text-4xl cursor-pointer" onclick="openAddModal()">
@@ -142,9 +178,12 @@
                         <th class="px-4 py-2 text-left">Name</th>
                         <th class="px-4 py-2 text-left">Email</th>
                         <th class="px-4 py-2 text-left">UserRole</th>
-                        <th class="px-4 py-2 text-center">Actions</th>
+                        <?php if ($role === 'admin'): ?>
+                            <th class="px-4 py-2 text-center">Actions</th>
+                        <?php endif; ?>
                     </tr>
                 </thead>
+
                 <tbody>
                     <?php foreach ($users as $row) { ?>
                         <?php if (
@@ -156,9 +195,9 @@
                                 <td class="px-4 py-2"><?php echo $row->name; ?></td>
                                 <td class="px-4 py-2"><?php echo $row->email; ?></td>
                                 <td class="px-4 py-2"><?php echo $row->userRole; ?></td>
-                                <td class="px-4 py-2 text-center">
-                                    <!-- Admin can see both Edit and Delete buttons for all users -->
-                                    <?php if ($role === 'admin'): ?>
+                                <?php if ($role === 'admin'): ?>
+                                    <td class="px-4 py-2 text-center">
+                                        <!-- Admin can see both Edit and Delete buttons for all users -->
                                         <button
                                             class="bg-green-400 text-white py-1 px-4 rounded hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 mr-2"
                                             onclick="openEditModal(<?php echo $row->id; ?>,'<?php echo $row->name; ?>', '<?php echo $row->email; ?>','<?php echo $row->userRole; ?>')">
@@ -168,12 +207,6 @@
                                             class="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
                                             onclick="confirmDelete('<?php echo $row->id; ?>')">
                                             <i class="fa-solid fa-trash"></i> Delete
-                                        </button>
-                                    <?php elseif (($role === 'user' || $role === 'supervisor' || $role === 'teamLeader') && $row->userRole === $role): ?>
-                                        <button
-                                            class="bg-green-400 text-white py-1 px-4 rounded hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 mr-2"
-                                            onclick="openEditModal(<?php echo $row->id; ?>,'<?php echo $row->name; ?>', '<?php echo $row->email; ?>','<?php echo $row->userRole; ?>')">
-                                            <i class="fa-solid fa-pen-to-square"></i> Edit
                                         </button>
                                     <?php endif; ?>
                                 </td>
@@ -194,41 +227,44 @@
     </div>
     <!-- Edit User Modal -->
     <div id="editModal" class="absolute inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 hidden">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm mx-4 sm:mx-8">
-        <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">Edit User</h2>
-        <form id="editForm" action="/updateuser" method="POST">
-            <div class="mb-4" hidden>
-                <label for="editId" class="block text-gray-700">Id</label>
-                <input type="text" name="id" id="editId" class="w-full p-2 border border-gray-300 rounded mt-2" readonly required>
-            </div>
-            <div class="mb-4">
-                <label for="editName" class="block text-gray-700">Name</label>
-                <input type="text" name="name" id="editName" class="w-full p-2 border border-gray-300 rounded mt-2" required>
-            </div>
-            <div class="mb-4">
-                <label for="editEmail" class="block text-gray-700">Email</label>
-                <input type="email" name="email" id="editEmail" class="w-full p-2 border border-gray-300 rounded mt-2" required>
-            </div>
-
-            <!-- Conditionally show UserRole input based on the user's role -->
-            <?php if ($role === 'admin'): ?>
-                <div class="mb-4">
-                    <label for="edituserRole" class="block text-gray-700">UserRole</label>
-                    <input type="text" name="userRole" id="edituserRole" class="w-full p-2 border border-gray-300 rounded mt-2" required>
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm mx-4 sm:mx-8">
+            <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">Edit User</h2>
+            <form id="editForm" action="/updateuser" method="POST">
+                <div class="mb-4" hidden>
+                    <label for="editId" class="block text-gray-700">Id</label>
+                    <input type="text" name="id" id="editId" class="w-full p-2 border border-gray-300 rounded mt-2"
+                        readonly required>
                 </div>
-            <?php else: ?>
-                <input type="hidden" name="userRole" id="edituserRole" value="<?= $loggedinUser->userRole ?>">
-            <?php endif; ?>
+                <div class="mb-4">
+                    <label for="editName" class="block text-gray-700">Name</label>
+                    <input type="text" name="name" id="editName" class="w-full p-2 border border-gray-300 rounded mt-2"
+                        required>
+                </div>
+                <div class="mb-4">
+                    <label for="editEmail" class="block text-gray-700">Email</label>
+                    <input type="email" name="email" id="editEmail"
+                        class="w-full p-2 border border-gray-300 rounded mt-2" required>
+                </div>
 
-            <div class="flex flex-col sm:flex-row justify-between">
-                <button type="button" onclick="closeEditModal()" class="bg-gray-400 text-white px-4 py-2 rounded mb-2 sm:mb-0">Cancel</button>
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save Changes</button>
-            </div>
-        </form>
+                <!-- Conditionally show UserRole input based on the user's role -->
+                <?php if ($role === 'admin'): ?>
+                    <div class="mb-4">
+                        <label for="edituserRole" class="block text-gray-700">UserRole</label>
+                        <input type="text" name="userRole" id="edituserRole"
+                            class="w-full p-2 border border-gray-300 rounded mt-2" required>
+                    </div>
+                <?php else: ?>
+                    <input type="hidden" name="userRole" id="edituserRole" value="<?= $loggedinUser->userRole ?>">
+                <?php endif; ?>
+
+                <div class="flex flex-col sm:flex-row justify-between">
+                    <button type="button" onclick="closeEditModal()"
+                        class="bg-gray-400 text-white px-4 py-2 rounded mb-2 sm:mb-0">Cancel</button>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save Changes</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-
-
     <script>
         // Pagination state variables
         let currentPage = 1;

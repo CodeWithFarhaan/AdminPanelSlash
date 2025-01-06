@@ -62,21 +62,56 @@
         </div>
     </nav>
     <nav class="bg-gray-300 text-black px-4 py-4">
-        <div class="flex justify-evenly items-center">
-            <p class="text-lg font-semibold">Dashboard</p>
-            <p class="text-lg font-semibold">Live</p>
-            <p class="text-lg font-semibold">Conversations</p>
-            <p class="text-lg font-semibold">Reports</p>
-            <div class="dropdown p-2">
-                <a class="text-lg font-semibold px-4 py-2" href="#">Operations</a>
-                <div class="rounded-md dropdown-content">
-                    <a href="/users">Users</a>
-                    <a href="/campaigns">Campaigns</a>
-                    <a href="/accesslevel">Access Level</a>
-                    <a href="/chats">Chat</a>
-                </div>
+        <?php if (
+            $role === 'admin' ||
+            ($role === 'user' || $role === 'supervisor' || $role === 'teamLeader')
+        ): ?>
+            <div class="flex justify-evenly items-center">
+
+                <!-- For Admin: Full access to all sections -->
+                <?php if ($role === 'admin'): ?>
+                    <p class="px-8 text-lg font-semibold">Dashboard</p>
+                    <p class="text-lg font-semibold">Live</p>
+
+                    <!-- Conversations section for Admin -->
+                    <div class="dropdown p-2">
+                        <a class="text-lg font-semibold px-4 py-2" href="#">Conversations</a>
+                        <div class="rounded-md dropdown-content">
+                            <a href="/chats">Chat</a>
+                        </div>
+                    </div>
+                    <div class="dropdown p-2">
+                        <a class="text-lg font-semibold px-4 py-2" href="#">Report</a>
+                        <div class="rounded-md dropdown-content">
+                            <a href="/auditlog">Audit Log</a>
+                        </div>
+                    </div>
+                    <div class="dropdown p-2">
+                        <a class="text-lg font-semibold px-4 py-2" href="#">Operations</a>
+                        <div class="rounded-md dropdown-content">
+                            <a href="/users">Users</a>
+                            <a href="/campaigns">Campaigns</a>
+                            <a href="/accesslevel">Access Level</a>
+                        </div>
+                    </div>
+                    <!-- For Supervisor, User, Team Leader: Limited access -->
+                <?php elseif ($role === 'user' || $role === 'supervisor' || $role === 'teamLeader'): ?>
+                    <!-- Conversations section for User, Supervisor, Team Leader -->
+                    <div class="dropdown p-2">
+                        <a class="text-lg font-semibold px-4 py-2" href="#">Conversations</a>
+                        <div class="rounded-md dropdown-content">
+                            <a href="/chats">Chat</a>
+                        </div>
+                    </div>
+                    <div class="dropdown p-2">
+                        <a class="text-lg font-semibold px-4 py-2" href="#">Operations</a>
+                        <div class="rounded-md dropdown-content">
+                            <a href="/campaigns">Campaigns</a>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
-        </div>
+        <?php endif; ?>
     </nav>
     <main>
         <div class="container">
