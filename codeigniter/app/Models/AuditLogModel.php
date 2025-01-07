@@ -1,30 +1,42 @@
 <?php
+
 namespace App\Models;
+
 use CodeIgniter\Model;
 
-
 class AuditLogModel extends Model {
+    // Table name
     protected $table      = 'auditlog';
+    
+    // Primary key
     protected $primaryKey = 'id';
 
+    // Auto increment
     protected $useAutoIncrement = true;
 
+    // Return type
     protected $returnType     = 'object';
+
+    // Soft deletes
     protected $useSoftDeletes = false;
 
-    protected $allowedFields = ['id', 'datetime', 'name', 'logs'];
+    // Fields allowed to be inserted or updated
+    protected $allowedFields = ['datetime', 'action', 'user_id', 'entity', 'entity_id', 'details'];
 
+    // Empty inserts are not allowed
     protected bool $allowEmptyInserts = false;
+
+    // Only update changed fields
     protected bool $updateOnlyChanged = true;
 
-    // Dates
-    protected $useTimestamps = false;
-    protected $dateFormat    = 'datetime';
+    // Date format settings
+    protected $useTimestamps = false;  // You are not using timestamps like created_at/updated_at
+    protected $dateFormat    = 'datetime';  // Using the datetime format
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
 
-    // Validation
+    // Validation rules (if needed, you can define rules here)
     protected $validationRules      = [];
     protected $validationMessages   = [];
     protected $skipValidation       = false;

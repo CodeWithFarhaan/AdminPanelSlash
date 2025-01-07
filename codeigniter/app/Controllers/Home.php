@@ -40,6 +40,22 @@ class Home extends BaseController
     //---------------------------------------adduser(+)--------------------------------------------------------
     public function adduser()
     {
+        // Check if the logged-in user is authenticated
+        if (!$this->session->has('user')) {
+            return redirect()->to('/login');
+        }
+    
+        // Get the logged-in user details
+        $loggedinUser = $this->session->get('user');
+        $loggedinUserId = $loggedinUser->id;
+        $loggedinUserRole = $loggedinUser->userRole; // assuming userRole is 'admin' or other roles
+    
+        // Only proceed if the logged-in user is an admin
+        if ($loggedinUserRole !== 'admin') {
+            return redirect()->to('/users')->with('error', 'You do not have permission to add a user.');
+        }
+    
+        // Proceed with adding the user
         if (isset($_POST['name'])) {
             $user_model = new UserModel();
             $data = [
@@ -48,14 +64,33 @@ class Home extends BaseController
                 'password' => password_hash($this->request->getPost('password'), PASSWORD_BCRYPT)
             ];
             $result = $user_model->save($data);
+    
+            // If the user is added successfully, create an audit log
             if ($result) {
-                return redirect()->to('/users')->with('success', 'user added successful!');
+                // Prepare the data for the audit log
+                $auditlog_model = new AuditLogModel(); // Assuming you have an AuditLogModel
+                $auditData = [
+                    'datetime' => date('Y-m-d H:i:s'), // Current timestamp
+                    'action' => 'create', // Action type (create, update, delete)
+                    'user_id' => $loggedinUserId, // ID of the logged-in admin user
+                    'entity' => 'user', // Entity being affected
+                    'entity_id' => $user_model->getInsertID(), // The ID of the newly created user
+                    'details' => 'User with name ' . $this->request->getPost('name') . ' was added.' // Details of the action
+                ];
+    
+                // Save the audit log
+                $auditlog_model->save($auditData);
+    
+                // Redirect with a success message
+                return redirect()->to('/users')->with('success', 'User added successfully!');
             } else {
+                // If user creation failed, return with an error message
                 return redirect()->back()->with('error', 'Failed to add user');
             }
         }
+    
         return view('adduser');
-    }
+    }    
 
     //----------------------------------------------updateuser--------------------------------------------------
     public function updateUser()
@@ -94,7 +129,6 @@ class Home extends BaseController
         }
     }
 
-
     //---------------------------------------deleteuser--------------------------------------------------------
     public function deleteUser($id)
     {
@@ -116,6 +150,7 @@ class Home extends BaseController
             return redirect()->to('/users')->with('error', 'Failed to delete user');
         }
     }
+
 
     //-------------------------------------------------signup--------------------------------------------------------------
     public function signup()
@@ -293,7 +328,7 @@ class Home extends BaseController
         }
         return redirect()->to('/accesslevel');
     }
-    
+
 
     //---------------------------------------auditlog-------------------------------------------------------------
     public function auditlog()

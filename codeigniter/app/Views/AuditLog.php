@@ -114,3 +114,121 @@
             </div>
         <?php endif; ?>
     </nav>
+    <!-- Main content -->
+    <div class="flex justify-center items-center p-4">
+        <!-- Dashboard Table Container -->
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
+            <!-- Header Section with Space Between -->
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
+                <h1 class="text-3xl font-semibold text-gray-800 mb-4 sm:mb-0 sm:text-left">Audit Logs</h1>
+            </div>
+            <!-- Table Start -->
+            <table class="min-w-full table-auto border-collapse" id="auditlogTable">
+                <thead>
+                    <tr class="bg-indigo-600 text-white">
+                        <th class="px-4 py-2 text-left">ID</th>
+                        <th class="px-4 py-2 text-left">Datetime</th>
+                        <th class="px-4 py-2 text-left">Action</th>
+                        <th class="px-4 py-2 text-left">UserId</th>
+                        <th class="px-4 py-2 text-left">Entity</th>
+                        <th class="px-4 py-2 text-left">EntityId</th>
+                        <th class="px-4 py-2 text-left">Details</th>
+                        <?php if ($role === 'admin'): ?>
+                            <th class="px-4 py-2 text-center">Actions</th>
+                        <?php endif; ?>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <?php foreach ($auditlogs as $row) { ?>
+                        <?php if (
+                            ($role === 'admin') ||
+                            (($role === 'user' || $role === 'supervisor' || $role === 'teamLeader') && $row->userRole !== 'admin')
+                        ): ?>
+                            <tr class="border-b">
+                                <td class="px-4 py-2"><?php echo $row->id; ?></td>
+                                <td class="px-4 py-2"><?php echo $row->datetime; ?></td>
+                                <td class="px-4 py-2"><?php echo $row->action; ?></td>
+                                <td class="px-4 py-2"><?php echo $row->user_id; ?></td>
+                                <td class="px-4 py-2"><?php echo $row->entity; ?></td>
+                                <td class="px-4 py-2"><?php echo $row->entity_id; ?></td>
+                                <td class="px-4 py-2"><?php echo $row->details; ?></td>
+                                <?php if ($role === 'admin'): ?>
+                                    <td class="px-4 py-2 text-center">
+                                        <button
+                                            class="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                            onclick="confirmDelete('<?php echo $row->id; ?>')">
+                                            <i class="fa-solid fa-trash"></i> 
+                                        </button>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+                    <?php } ?>
+                </tbody>
+            </table>
+
+            <!-- Pagination Controls -->
+            <div id="pagination" class="flex justify-between mt-6">
+                <button onclick="changePage(-1)"
+                    class="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 focus:outline-none">Previous</button>
+                <button onclick="changePage(1)"
+                    class="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 focus:outline-none">Next</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Pagination state variables
+        let currentPage = 1;
+        const rowsPerPage = 3;
+
+        // Function to show the correct users for the current page
+        function paginateAuditLog() {
+            const rows = document.querySelectorAll('#auditlogTable tbody tr');
+            const totalRows = rows.length;
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+
+            // Hide all rows first
+            rows.forEach(row => row.style.display = 'none');
+
+            // Show the rows for the current page
+            for (let i = startIndex; i < endIndex && i < totalRows; i++) {
+                rows[i].style.display = '';
+            }
+        }
+
+        // Change page based on direction (-1 for previous, 1 for next)
+        function changePage(direction) {
+            const rows = document.querySelectorAll('#auditlogTable tbody tr');
+            const totalRows = rows.length;
+            const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+            currentPage += direction;
+
+            // Prevent going out of bounds
+            if (currentPage < 1) {
+                currentPage = 1;
+            } else if (currentPage > totalPages) {
+                currentPage = totalPages;
+            }
+
+            paginateAuditLog();
+        }
+
+        // Initialize pagination on page load
+        window.onload = function () {
+            paginateAuditLog();
+        };
+
+
+        function confirmDelete(id) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                // Send DELETE request to backend
+                window.location.href = '/deleteuser/' + id;
+            }
+        }
+    </script>
+</body>
+
+</html>
