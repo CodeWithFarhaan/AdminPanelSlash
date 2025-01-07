@@ -126,16 +126,10 @@
             <table class="min-w-full table-auto border-collapse" id="auditlogTable">
                 <thead>
                     <tr class="bg-indigo-600 text-white">
-                        <th class="px-4 py-2 text-left">ID</th>
                         <th class="px-4 py-2 text-left">Datetime</th>
                         <th class="px-4 py-2 text-left">Action</th>
-                        <th class="px-4 py-2 text-left">UserId</th>
-                        <th class="px-4 py-2 text-left">Entity</th>
-                        <th class="px-4 py-2 text-left">EntityId</th>
-                        <th class="px-4 py-2 text-left">Details</th>
-                        <?php if ($role === 'admin'): ?>
-                            <th class="px-4 py-2 text-center">Actions</th>
-                        <?php endif; ?>
+                        <th class="px-4 py-2 text-left">Name</th>
+                        <th class="px-4 py-2 text-left">Logs</th>
                     </tr>
                 </thead>
 
@@ -146,22 +140,10 @@
                             (($role === 'user' || $role === 'supervisor' || $role === 'teamLeader') && $row->userRole !== 'admin')
                         ): ?>
                             <tr class="border-b">
-                                <td class="px-4 py-2"><?php echo $row->id; ?></td>
                                 <td class="px-4 py-2"><?php echo $row->datetime; ?></td>
                                 <td class="px-4 py-2"><?php echo $row->action; ?></td>
-                                <td class="px-4 py-2"><?php echo $row->user_id; ?></td>
-                                <td class="px-4 py-2"><?php echo $row->entity; ?></td>
-                                <td class="px-4 py-2"><?php echo $row->entity_id; ?></td>
-                                <td class="px-4 py-2"><?php echo $row->details; ?></td>
-                                <?php if ($role === 'admin'): ?>
-                                    <td class="px-4 py-2 text-center">
-                                        <button
-                                            class="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
-                                            onclick="confirmDelete('<?php echo $row->id; ?>')">
-                                            <i class="fa-solid fa-trash"></i> 
-                                        </button>
-                                    <?php endif; ?>
-                                </td>
+                                <td class="px-4 py-2"><?php echo $row->name; ?></td>
+                                <td class="px-4 py-2"><?php echo $row->logs; ?></td>
                             </tr>
                         <?php endif; ?>
                     <?php } ?>
@@ -220,14 +202,6 @@
         window.onload = function () {
             paginateAuditLog();
         };
-
-
-        function confirmDelete(id) {
-            if (confirm('Are you sure you want to delete this user?')) {
-                // Send DELETE request to backend
-                window.location.href = '/deleteuser/' + id;
-            }
-        }
     </script>
 </body>
 

@@ -21,7 +21,7 @@ class AuditLogModel extends Model {
     protected $useSoftDeletes = false;
 
     // Fields allowed to be inserted or updated
-    protected $allowedFields = ['datetime', 'action', 'user_id', 'entity', 'entity_id', 'details'];
+    protected $allowedFields = ['datetime', 'action', 'user_id', 'name', 'logs'];
 
     // Empty inserts are not allowed
     protected bool $allowEmptyInserts = false;

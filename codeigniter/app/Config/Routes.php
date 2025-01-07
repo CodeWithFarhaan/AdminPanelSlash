@@ -32,5 +32,7 @@ $routes->get('/accesslevel', 'Home::accessLevel');
 $routes->post('/update-role/(:num)', 'Home::updateRole/$1');
 
 $routes->match(['GET', 'POST'], '/auditlog', 'Home::auditlog');
+// $routes->get('/deleteauditlog/(:num)', 'Home::deleteAuditLog/$1');
+// $routes->delete('/deleteauditlog/(:num)', 'Home::deleteAuditLog/$1');
 
 

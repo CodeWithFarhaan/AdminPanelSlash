@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 namespace App\Database\Migrations;
 
@@ -22,27 +22,23 @@ class Auditlog extends Migration
                 'type' => 'ENUM',
                 'constraint' => ['create', 'update', 'delete'],
             ],
-            'user_id' => [
+            'user_id' => [  // Changed from 'name' to 'user_id' to reference users table
                 'type' => 'INT',
-                'constraint' => 11,
+                'constraint' => 5,
                 'unsigned' => true,
             ],
-            'entity' => [
+            'name' => [
                 'type' => 'VARCHAR',
-                'constraint' => 255,
+                'constraint' => '255',
             ],
-            'entity_id' => [
-                'type' => 'INT',
-                'constraint' => 11,
-                'unsigned' => true,
-            ],
-            'details' => [
+            'logs' => [
                 'type' => 'TEXT',
             ],
         ]);
 
+        // Adding a foreign key to the 'user_id' to reference the 'id' from the 'users' table
         $this->forge->addPrimaryKey('id');
-        $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE'); // Foreign key to users table
+        $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
         $this->forge->createTable('auditlog');
     }
 

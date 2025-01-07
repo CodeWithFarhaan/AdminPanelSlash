@@ -29,7 +29,7 @@ class Users extends Migration
             ],
             'userRole' => [
                 'type' => 'ENUM',
-                'constraint' => ['user', 'admin','teamLeader', 'supervisor'],
+                'constraint' => ['user', 'admin', 'teamLeader', 'supervisor'],
                 'default' => 'user', // Optionally set default to 'user'
             ]
         ]);

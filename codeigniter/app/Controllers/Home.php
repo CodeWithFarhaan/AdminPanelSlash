@@ -33,6 +33,7 @@ class Home extends BaseController
         $user_model = new UserModel();
         $users = $user_model->findAll();
         $loggedinUser = $this->session->get('user');
+        $loggedinUserName = $loggedinUser->name;
         $role = $loggedinUser->userRole;
         return view('/users', ['users' => $users, 'role' => $role, 'loggedinUser' => $loggedinUser]);
     }
@@ -44,18 +45,17 @@ class Home extends BaseController
         if (!$this->session->has('user')) {
             return redirect()->to('/login');
         }
-    
+
         // Get the logged-in user details
         $loggedinUser = $this->session->get('user');
-        $loggedinUserId = $loggedinUser->id;
-        $loggedinUserRole = $loggedinUser->userRole; // assuming userRole is 'admin' or other roles
-    
-        // Only proceed if the logged-in user is an admin
-        if ($loggedinUserRole !== 'admin') {
-            return redirect()->to('/users')->with('error', 'You do not have permission to add a user.');
+        $loggedinUserName = $loggedinUser->name;
+        $role = $loggedinUser->userRole;
+
+        // Check if the logged-in user is an admin
+        if ($role !== 'admin') {
+            return redirect()->to('/login');  // or return an error if non-admin users cannot add users
         }
-    
-        // Proceed with adding the user
+
         if (isset($_POST['name'])) {
             $user_model = new UserModel();
             $data = [
@@ -64,23 +64,20 @@ class Home extends BaseController
                 'password' => password_hash($this->request->getPost('password'), PASSWORD_BCRYPT)
             ];
             $result = $user_model->save($data);
-    
+
             // If the user is added successfully, create an audit log
             if ($result) {
-                // Prepare the data for the audit log
-                $auditlog_model = new AuditLogModel(); // Assuming you have an AuditLogModel
-                $auditData = [
-                    'datetime' => date('Y-m-d H:i:s'), // Current timestamp
-                    'action' => 'create', // Action type (create, update, delete)
-                    'user_id' => $loggedinUserId, // ID of the logged-in admin user
-                    'entity' => 'user', // Entity being affected
-                    'entity_id' => $user_model->getInsertID(), // The ID of the newly created user
-                    'details' => 'User with name ' . $this->request->getPost('name') . ' was added.' // Details of the action
+                // Create an audit log entry
+                $auditlog_model = new AuditLogModel(); // Assuming you have a model for AuditLog
+                $auditlog_data = [
+                    'datetime' => date('Y-m-d H:i:s'),
+                    'action' => 'create', // Action is 'create' for adding a new user
+                    'user_id' => $loggedinUser->id,  // ID of the logged-in admin
+                    'name' => $loggedinUserName,  // Name of the logged-in admin
+                    'logs' => 'Created user: ' . $data['name']
                 ];
-    
-                // Save the audit log
-                $auditlog_model->save($auditData);
-    
+                $auditlog_model->save($auditlog_data);  // Save the log to the auditlog table
+
                 // Redirect with a success message
                 return redirect()->to('/users')->with('success', 'User added successfully!');
             } else {
@@ -88,22 +85,27 @@ class Home extends BaseController
                 return redirect()->back()->with('error', 'Failed to add user');
             }
         }
-    
+
         return view('adduser');
-    }    
+    }
+
+
+
 
     //----------------------------------------------updateuser--------------------------------------------------
     public function updateUser()
     {
         $user_model = new UserModel();
-        // Check if user exists
+        // Check if the user exists
         $id = $this->request->getPost('id');
         $name = $this->request->getPost('name');
         $email = $this->request->getPost('email');
         $userRole = $this->request->getPost('userRole');
         $updatedData = [];
 
+        // Get logged-in user details
         $loggedinUser = $this->session->get('user');
+        $loggedinUserName = $loggedinUser->name;
         $role = $loggedinUser->userRole;
 
         // Only admin can update userRole
@@ -121,32 +123,101 @@ class Home extends BaseController
         // Update the user
         $result = $user_model->update($id, $updatedData);
 
-        // Check the result and redirect accordingly
-        if (is_object($result) && method_exists($result, 'getStatusCode') && $result->getStatusCode() == 200) {
+        // Audit log model
+        $auditlog_model = new AuditLogModel();
+
+        // Prepare the base data for audit log
+        $auditData = [
+            'datetime' => date('Y-m-d H:i:s'), // Current timestamp
+            'action' => 'update', // Action type (update)
+            'user_id' => $loggedinUser->id, // ID of the logged-in user
+            'name' => $loggedinUserName, // Name of the logged-in admin user
+            'logs' => 'User with ID ' . $id . ' was updated.' // Initial log entry
+        ];
+
+        // If the update is successful, add more specific details to the audit log
+        if ($result) {
+            // Add detailed changes for the updated fields
+            $details = [];
+
+            if ($name) {
+                $details[] = 'Name changed to ' . $name . '.';
+            }
+            if ($email) {
+                $details[] = 'Email changed to ' . $email . '.';
+            }
+            if ($userRole && $role === 'admin') {
+                $details[] = 'User role changed to ' . $userRole . '.';
+            }
+
+            // Join all details into a single log message
+            $auditData['logs'] = implode(' ', $details);
+
+            // Save the audit log
+            $auditlog_model->save($auditData);
+
+            // Redirect with success message
             return redirect()->to("/users")->with("success", "User updated successfully");
         } else {
+            // If update fails, save a failed audit log entry
+            $auditData['logs'] = 'Failed to update user with ID ' . $id . '.';
+            $auditlog_model->save($auditData);
+
+            // Redirect with error message
             return redirect()->to("/users")->with("error", "Failed to update user");
         }
     }
+
 
     //---------------------------------------deleteuser--------------------------------------------------------
     public function deleteUser($id)
     {
         $user_model = new UserModel();
 
-        // Check if user exists
+        // Check if the user exists
         $user = $user_model->find($id); // Or however you check for the user existence
         if (!$user) {
             return redirect()->to('/users')->with('error', 'User not found');
         }
 
+        // Get logged-in user details
+        $loggedinUser = $this->session->get('user');
+        $loggedinUserName = $loggedinUser->name;
+        $role = $loggedinUser->userRole;
+
+        // Only admin can delete a user
+        if ($role !== 'admin') {
+            return redirect()->to('/users')->with('error', 'You do not have permission to delete users.');
+        }
+
+        // Audit log model
+        $auditlog_model = new AuditLogModel();
+
+        // Prepare the base data for the audit log
+        $auditData = [
+            'datetime' => date('Y-m-d H:i:s'), // Current timestamp
+            'action' => 'delete', // Action type (delete)
+            'user_id' => $loggedinUser->id, // ID of the logged-in user
+            'name' => $loggedinUserName, // Name of the logged-in admin user
+            'logs' => 'User with ID ' . $id . ' was deleted.' // Initial log entry
+        ];
+
         // Delete the user from the database
         $result = $user_model->delete($id);
 
-        // Check if delete operation was successful
+        // If the delete is successful, save the audit log
         if ($result) {
+            // Save the audit log entry with success message
+            $auditlog_model->save($auditData);
+
+            // Redirect with success message
             return redirect()->to('/users')->with('success', 'User deleted successfully');
         } else {
+            // If delete fails, log the failure in the audit log
+            $auditData['logs'] = 'Failed to delete user with ID ' . $id . '.'; // Log failure details
+            $auditlog_model->save($auditData);
+
+            // Redirect with error message
             return redirect()->to('/users')->with('error', 'Failed to delete user');
         }
     }
@@ -216,6 +287,7 @@ class Home extends BaseController
         $campaign_model = new CampaignModel();
         $campaigns = $campaign_model->findAll();
         $loggedinCampaign = $this->session->get('user');
+        $loggedinUserName = $loggedinCampaign->name;
         $role = $loggedinCampaign->userRole;
         return view('/campaigns', ['campaigns' => $campaigns, 'role' => $role, 'loggedinCampaign' => $loggedinCampaign]);
     }
@@ -223,6 +295,22 @@ class Home extends BaseController
     //---------------------------------------addcampaign(+)--------------------------------------------------------   
     public function addcampaign()
     {
+        // Check if the user is authenticated
+        if (!$this->session->has('user')) {
+            return redirect()->to('/login');
+        }
+
+        // Get the logged-in user details
+        $loggedinUser = $this->session->get('user');
+        $loggedinUserName = $loggedinUser->name;
+        $role = $loggedinUser->userRole;
+
+        // Only proceed if the user is an admin (optional based on your business rules)
+        if ($role !== 'admin') {
+            return redirect()->to('/campaigns')->with('error', 'You do not have permission to add a campaign.');
+        }
+
+        // Proceed with adding the campaign
         if (isset($_POST['name'])) {
             $campaign_model = new CampaignModel();
             $data = [
@@ -230,38 +318,109 @@ class Home extends BaseController
                 'description' => $this->request->getPost('description'),
                 'client' => $this->request->getPost('client'),
             ];
+
+            // Save the campaign data
             $result = $campaign_model->save($data);
+
+            // Create an audit log if the campaign was added successfully
             if ($result) {
-                return redirect()->to('/campaigns')->with('success', 'campaign added successfully!');
+                // Audit log model
+                $auditlog_model = new AuditLogModel();
+
+                // Prepare the data for the audit log
+                $auditData = [
+                    'datetime' => date('Y-m-d H:i:s'), // Current timestamp
+                    'action' => 'create', // Action type (create)
+                    'user_id' => $loggedinUser->id, // ID of the logged-in admin user
+                    'name' => $loggedinUserName, // Name of the logged-in admin user
+                    'logs' => 'Created Campaign: ' . $data['name']
+                ];
+
+                // Save the audit log
+                $auditlog_model->save($auditData);
+
+                // Redirect with a success message
+                return redirect()->to('/campaigns')->with('success', 'Campaign added successfully!');
             } else {
+                // If campaign creation failed, return with an error message
                 return redirect()->back()->with('error', 'Failed to add campaign');
             }
         }
+
         return view('addcampaign');
     }
+
+
 
     //----------------------------------------------updatecampaign----------------------------------------------------------------
     public function updatecampaign()
     {
         $campaign_model = new CampaignModel();
-        // Check if user exists
+
+        // Check if the campaign exists
         $id = $this->request->getPost('id');
         $name = $this->request->getPost('name');
         $description = $this->request->getPost('description');
         $client = $this->request->getPost('client');
         $updatedData = [];
 
-        if ($name)
-            $updatedData['name'] = $name;
-        if ($description)
-            $updatedData['description'] = $description;
-        if ($client)
-            $updatedData['client'] = $client;
+        // Get logged-in user details
+        $loggedinUser = $this->session->get('user');
+        $loggedinUserName = $loggedinUser->name;
+        $loggedinUserRole = $loggedinUser->userRole;
 
+        // Prepare the data for the campaign update
+        if ($name) {
+            $updatedData['name'] = $name;
+        }
+        if ($description) {
+            $updatedData['description'] = $description;
+        }
+        if ($client) {
+            $updatedData['client'] = $client;
+        }
+
+        // Update the campaign in the database
         $result = $campaign_model->update($id, $updatedData);
-        if (is_object($result) && method_exists($result, 'getStatusCode') && $result->getStatusCode() == 200) {
+
+        // Audit log model
+        $auditlog_model = new AuditLogModel();
+
+        // Prepare audit log data
+        $auditData = [
+            'datetime' => date('Y-m-d H:i:s'), // Current timestamp
+            'action' => 'update', // Action type (update)
+            'user_id' => $loggedinUser->id, // ID of the logged-in user who performed the action
+            'name' => $loggedinUserName, // Name of the logged-in user who performed the action
+            'logs' => 'Campaign with ID ' . $id . ' was updated.' // General details about the update
+        ];
+
+        // If the update is successful, add more specific details to the audit log
+        if ($result) {
+            $auditData['details'] = ''; // Initialize details string
+
+            // Add specific changes to the details
+            if ($name) {
+                $auditData['details'] .= ' Name changed to ' . $name . '.';
+            }
+            if ($description) {
+                $auditData['details'] .= ' Description changed to ' . $description . '.';
+            }
+            if ($client) {
+                $auditData['details'] .= ' Client changed to ' . $client . '.';
+            }
+
+            // Save the audit log
+            $auditlog_model->save($auditData);
+
+            // Redirect with success message
             return redirect()->to("/campaigns")->with("success", "Campaign updated successfully");
         } else {
+            // If the update fails, save a failed audit log entry
+            $auditData['details'] = 'Failed to update campaign with ID ' . $id . '.'; // Log failure details
+            $auditlog_model->save($auditData);
+
+            // Redirect with error message
             return redirect()->to("/campaigns")->with("error", "Failed to update campaign");
         }
     }
@@ -271,19 +430,50 @@ class Home extends BaseController
     public function deleteCampaign($id)
     {
         $campaign_model = new CampaignModel();
-        // Check if user exists
-        $campaign = $campaign_model->find($id); // Or however you check for the user existence
+        // Check if campaign exists
+        $campaign = $campaign_model->find($id); // Or however you check for the campaign existence
         if (!$campaign) {
             return redirect()->to('/campaigns')->with('error', 'campaign not found');
         }
 
+        // Get logged-in user details
+        $loggedinUser = $this->session->get('user');
+        $loggedinUserName = $loggedinUser->name;
+        $role = $loggedinUser->userRole;
+
+        // Only admin can delete a campaign
+        if ($role !== 'admin') {
+            return redirect()->to('/campaigns')->with('error', 'You do not have permission to delete campaign.');
+        }
+
+        // Audit log model
+        $auditlog_model = new AuditLogModel();
+
+        // Prepare data for audit log
+        $auditData = [
+            'datetime' => date('Y-m-d H:i:s'), // Current timestamp
+            'action' => 'delete', // Action type (delete)
+            'user_id' => $loggedinUser->id, // ID of the logged-in user
+            'name' => $loggedinUserName, // ID of the logged-in admin user
+            'logs' => 'Campaign with ID ' . $id . ' was deleted.' // Details of the action
+        ];
+
         // Delete the user from the database
         $result = $campaign_model->delete($id);
 
-        // Check if delete operation was successful
+        // If the delete is successful, save the audit log
         if ($result) {
+            // Save the audit log entry
+            $auditlog_model->save($auditData);
+
+            // Redirect with success message
             return redirect()->to('/campaigns')->with('success', 'Campaign deleted successfully');
         } else {
+            // If delete fails, log the failure in the audit log
+            $auditData['logs'] = 'Failed to delete campaign with ID ' . $id . '.'; // Log failure details
+            $auditlog_model->save($auditData);
+
+            // Redirect with error message
             return redirect()->to('/campaigns')->with('error', 'Failed to delete campaign');
         }
     }
@@ -308,6 +498,7 @@ class Home extends BaseController
         $user_model = new UserModel();
         $users = $user_model->findAll();
         $loggedinUser = $this->session->get('user');
+        $loggedinUserName = $loggedinUser->name;
         $role = $loggedinUser->userRole;
         return view('accesslevel', ['users' => $users, 'role' => $role, 'loggedinUser' => $loggedinUser]);
     }
@@ -317,16 +508,46 @@ class Home extends BaseController
     {
         $newRole = $this->request->getPost('roles');
         $loggedinUser = $this->session->get('user');
+
+        // Check if the logged-in user has 'admin' role
         if ($loggedinUser->userRole !== 'admin') {
             return redirect()->to('/accesslevel')->with('error', 'You do not have permission to change roles.');
         }
+
+        // Find the user by ID
         $user_model = new UserModel();
         $user = $user_model->find($id);
+
         if ($user) {
+            // Store the old role before updating
+            $oldRole = $user->userRole;
+
+            // Update the user's role
             $user->userRole = $newRole;
             $user_model->save($user);
+
+            // Log the action in the auditlog table
+            $this->logAudit($loggedinUser->id, 'update', "Changed role for user {$user->name} from {$oldRole} to {$newRole}");
         }
+
+        // Redirect after role update
         return redirect()->to('/accesslevel');
+    }
+
+    protected function logAudit($userId, $action, $description)
+    {
+        // Prepare the audit log data
+        $auditData = [
+            'datetime' => date('Y-m-d H:i:s'),  // Current date and time
+            'action' => $action,
+            'user_id' => $userId,                // ID of the user performing the action
+            'name' => 'Role Update',             // You can customize this name
+            'logs' => $description,              // Description of the action
+        ];
+
+        // Insert the audit log into the database
+        $auditModel = new AuditLogModel();
+        $auditModel->insert($auditData);
     }
 
 
@@ -342,4 +563,21 @@ class Home extends BaseController
         $auditlogs = $auditlog_model->findAll();
         return view('/auditlog', ['auditlogs' => $auditlogs, 'role' => $role, 'loggedinUser' => $loggedinUser]);
     }
+
+
+    //---------------------------------------deleteauditlog (optional)--------------------------------------------------------
+    // public function deleteauditlog($id)
+    // {
+    //     $auditlog_model = new AuditLogModel();
+    //     $auditlog = $auditlog_model->find($id);
+    //     if (!$auditlog) {
+    //         return redirect()->to('/auditlog')->with('error', 'Auditlog not found.');
+    //     }
+    //     $result = $auditlog_model->delete($id);
+    //     if ($result) {
+    //         return redirect()->to('/auditlog')->with('success', 'Auditlog deleted successfully.');
+    //     } else {
+    //         return redirect()->to('/auditlog')->with('error', 'Failed to delete auditlog.');
+    //     }
+    // }
 }
